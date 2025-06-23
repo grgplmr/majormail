@@ -1,0 +1,106 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Interpeller son Maire 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-21 12:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: interpeller-son-maire.php:50
+msgid "Interpeller son Maire"
+msgstr ""
+
+#: inc/Frontend/Shortcode.php:25
+msgid "Contactez votre maire en quelques clics"
+msgstr ""
+
+#: inc/Frontend/Shortcode.php:26
+msgid "Exprimez vos préoccupations concernant la suppression du ramassage porte-à-porte"
+msgstr ""
+
+#: inc/Frontend/Shortcode.php:33
+msgid "Votre commune *"
+msgstr ""
+
+#: inc/Frontend/Shortcode.php:38
+msgid "Rechercher votre commune..."
+msgstr ""
+
+#: inc/Frontend/Shortcode.php:46
+msgid "Prénom *"
+msgstr ""
+
+#: inc/Frontend/Shortcode.php:51
+msgid "Nom *"
+msgstr ""
+
+#: inc/Frontend/Shortcode.php:57
+msgid "Email *"
+msgstr ""
+
+#: inc/Frontend/Shortcode.php:63
+msgid "Type de message"
+msgstr ""
+
+#: inc/Frontend/Shortcode.php:69
+msgid "Message type"
+msgstr ""
+
+#: inc/Frontend/Shortcode.php:70
+msgid "Choisir parmi nos modèles"
+msgstr ""
+
+#: inc/Frontend/Shortcode.php:76
+msgid "Message personnel"
+msgstr ""
+
+#: inc/Frontend/Shortcode.php:77
+msgid "Rédiger votre propre message"
+msgstr ""
+
+#: inc/Frontend/Shortcode.php:85
+msgid "Choisir un modèle"
+msgstr ""
+
+#: inc/Frontend/Shortcode.php:88
+msgid "Sélectionner un modèle..."
+msgstr ""
+
+#: inc/Frontend/Shortcode.php:98
+msgid "Aperçu du message"
+msgstr ""
+
+#: inc/Frontend/Shortcode.php:103
+msgid "Rédigez votre message..."
+msgstr ""
+
+#: inc/Frontend/Shortcode.php:113
+msgid "Envoyer le message"
+msgstr ""
+
+#: inc/Frontend/Shortcode.php:115
+msgid "Envoi en cours..."
+msgstr ""
+
+#: inc/Frontend/Shortcode.php:121
+msgid "Message envoyé avec succès !"
+msgstr ""
+
+#: inc/Frontend/Shortcode.php:122
+msgid "Votre message a été transmis au maire. Vous recevrez un accusé de réception par email."
+msgstr ""
+
+#: inc/Frontend/Shortcode.php:123
+msgid "Envoyer un autre message"
+msgstr ""

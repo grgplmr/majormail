@@ -1,0 +1,325 @@
+/* Plugin Interpeller son Maire - Frontend Styles */
+
+.ism-form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.ism-form-header {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+}
+
+.ism-form-header h2 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.ism-form-header p {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 1rem;
+}
+
+.ism-form {
+    padding: 2rem;
+}
+
+.ism-field-group {
+    margin-bottom: 1.5rem;
+}
+
+.ism-field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.ism-field-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.875rem;
+}
+
+.ism-field-group input,
+.ism-field-group select,
+.ism-field-group textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.ism-field-group input:focus,
+.ism-field-group select:focus,
+.ism-field-group textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Commune Search */
+.ism-commune-search {
+    position: relative;
+}
+
+.ism-search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #d1d5db;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.ism-search-results.show {
+    display: block;
+}
+
+.ism-commune-result {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.2s ease;
+}
+
+.ism-commune-result:hover {
+    background-color: #f9fafb;
+}
+
+.ism-commune-result:last-child {
+    border-bottom: none;
+}
+
+.ism-commune-name {
+    font-weight: 600;
+    color: #111827;
+}
+
+.ism-commune-details {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+}
+
+/* Message Type Selector */
+.ism-message-type-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.ism-radio-card {
+    position: relative;
+    cursor: pointer;
+}
+
+.ism-radio-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.ism-radio-content {
+    padding: 1.5rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.ism-radio-card input[type="radio"]:checked + .ism-radio-content {
+    border-color: #2563eb;
+    background-color: #eff6ff;
+}
+
+.ism-radio-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.ism-radio-title {
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 0.25rem;
+}
+
+.ism-radio-desc {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+/* Submit Button */
+.ism-submit-container {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.ism-submit-btn {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 0.875rem 2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ism-submit-btn:hover:not(:disabled) {
+    background-color: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.ism-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.ism-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Success Message */
+.ism-success {
+    text-align: center;
+    padding: 3rem 2rem;
+}
+
+.ism-success-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.ism-success h3 {
+    color: #059669;
+    margin: 0 0 1rem 0;
+    font-size: 1.5rem;
+}
+
+.ism-success p {
+    color: #6b7280;
+    margin: 0 0 2rem 0;
+    font-size: 1rem;
+}
+
+.ism-reset-btn {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.ism-reset-btn:hover {
+    background-color: #1d4ed8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .ism-form-container {
+        margin: 1rem;
+        border-radius: 8px;
+    }
+    
+    .ism-form-header {
+        padding: 1.5rem;
+    }
+    
+    .ism-form-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .ism-form {
+        padding: 1.5rem;
+    }
+    
+    .ism-field-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .ism-message-type-selector {
+        grid-template-columns: 1fr;
+    }
+    
+    .ism-radio-content {
+        padding: 1rem;
+    }
+}
+
+/* Accessibility */
+.ism-field-group input:focus,
+.ism-field-group select:focus,
+.ism-field-group textarea:focus {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+
+.ism-submit-btn:focus {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+
+/* Error States */
+.ism-field-error input,
+.ism-field-error select,
+.ism-field-error textarea {
+    border-color: #dc2626;
+}
+
+.ism-error-message {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Loading States */
+.ism-form.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.ism-form.loading .ism-submit-btn {
+    opacity: 0.8;
+}
