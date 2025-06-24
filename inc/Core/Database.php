@@ -13,7 +13,7 @@ class Database {
         $sql_communes = "CREATE TABLE $table_communes (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             name varchar(255) NOT NULL,
-            code_insee varchar(10) NOT NULL,
+            code_insee varchar(10) DEFAULT NULL,
             mayor_email varchar(255) NOT NULL,
             population int(11) DEFAULT 0,
             region varchar(255) DEFAULT '',

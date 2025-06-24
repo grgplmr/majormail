@@ -19,6 +19,9 @@
             
             // Delete commune
             $('.delete-commune').on('click', (e) => this.handleDeleteCommune(e));
+            $('.edit-commune').on('click', (e) => this.openEditCommune(e));
+            $('#ism-edit-commune-form').on('submit', (e) => this.handleEditCommune(e));
+            $('#ism-edit-commune-cancel').on('click', () => $('#ism-edit-commune-modal').css('display', 'none'));
             
             // Import CSV
             $('#import-csv').on('change', (e) => this.handleImportCSV(e));
@@ -85,6 +88,47 @@
                 },
                 error: () => {
                     alert('Erreur lors de la suppression');
+                }
+            });
+        }
+
+        openEditCommune(e) {
+            e.preventDefault();
+            const btn = $(e.currentTarget);
+            $('#edit_commune_id').val(btn.data('commune-id'));
+            $('#edit_commune_name').val(btn.data('commune-name'));
+            $('#edit_code_insee').val(btn.data('code-insee'));
+            $('#edit_mayor_email').val(btn.data('mayor-email'));
+            $('#edit_population').val(btn.data('population'));
+            $('#edit_region').val(btn.data('region'));
+            $('#ism-edit-commune-modal').css('display', 'flex');
+        }
+
+        handleEditCommune(e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: ajaxurl,
+                method: 'POST',
+                data: {
+                    action: 'ism_edit_commune',
+                    nonce: $('#ism_edit_commune_nonce').val(),
+                    commune_id: $('#edit_commune_id').val(),
+                    commune_name: $('#edit_commune_name').val(),
+                    code_insee: $('#edit_code_insee').val(),
+                    mayor_email: $('#edit_mayor_email').val(),
+                    population: $('#edit_population').val(),
+                    region: $('#edit_region').val()
+                },
+                success: (response) => {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        alert('Erreur: ' + response.data);
+                    }
+                },
+                error: () => {
+                    alert('Erreur lors de la mise à jour');
                 }
             });
         }
