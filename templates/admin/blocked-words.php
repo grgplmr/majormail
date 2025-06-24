@@ -4,7 +4,8 @@ global $wpdb;
 // Handle form submissions
 if (isset($_POST['action'])) {
     if ($_POST['action'] === 'save_blocked_words' && wp_verify_nonce($_POST['ism_nonce'], 'ism_save_blocked_words')) {
-        $words = sanitize_textarea_field($_POST['blocked_words']);
+        $raw_words = isset($_POST['blocked_words']) ? wp_unslash($_POST['blocked_words']) : '';
+        $words = sanitize_textarea_field($raw_words);
         $words_array = array_filter(array_map('trim', explode("\n", $words)));
         
         // Clear existing words
@@ -12,14 +13,22 @@ if (isset($_POST['action'])) {
         $wpdb->query("DELETE FROM $table");
         
         // Insert new words
+        $insert_success = true;
         foreach ($words_array as $word) {
-            $wpdb->insert($table, [
+            $result = $wpdb->insert($table, [
                 'word' => $word,
-                'is_regex' => 0
+                'is_regex' => 0,
             ]);
+            if ($result === false) {
+                $insert_success = false;
+            }
         }
-        
-        echo '<div class="notice notice-success"><p>Mots interdits sauvegardés avec succès</p></div>';
+
+        if ($insert_success) {
+            echo '<div class="notice notice-success"><p>Mots interdits sauvegardés avec succès</p></div>';
+        } else {
+            echo '<div class="notice notice-error"><p>Erreur lors de l\'enregistrement des mots interdits</p></div>';
+        }
     }
 }
 
