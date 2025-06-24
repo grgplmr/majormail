@@ -28,6 +28,7 @@ $communes = $wpdb->get_results("SELECT * FROM $table ORDER BY name ASC");
 
 <div class="wrap">
     <h1><?php _e('Communes & Maires', 'interpeller-son-maire'); ?></h1>
+    <input type="hidden" id="ism_admin_nonce" value="<?php echo wp_create_nonce('ism_admin'); ?>">
     
     <div class="ism-admin-header">
         <div class="ism-admin-welcome">

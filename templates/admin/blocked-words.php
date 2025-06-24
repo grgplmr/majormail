@@ -31,6 +31,7 @@ $words_text = implode("\n", array_column($blocked_words, 'word'));
 
 <div class="wrap">
     <h1><?php _e('Mots interdits', 'interpeller-son-maire'); ?></h1>
+    <input type="hidden" id="ism_admin_nonce" value="<?php echo wp_create_nonce('ism_admin'); ?>">
     
     <div class="ism-admin-header">
         <div class="ism-admin-welcome">
