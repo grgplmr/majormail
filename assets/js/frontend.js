@@ -18,6 +18,7 @@
             this.communes = [];
             this.templates = [];
             this.searchTimeout = null;
+            this.recaptchaToken = '';
             
             this.init();
         }
@@ -297,18 +298,25 @@
             
             $('#ism-success-message').hide();
             this.form.show();
+
+            this.initRecaptcha();
         }
         
         initRecaptcha() {
-            // Initialize Google reCAPTCHA v3 if configured
-            if (typeof grecaptcha !== 'undefined') {
-                // reCAPTCHA is loaded
+            if (typeof grecaptcha === 'undefined' || !ismAjax.recaptchaSiteKey) {
+                return;
             }
+
+            grecaptcha.ready(() => {
+                grecaptcha.execute(ismAjax.recaptchaSiteKey, { action: 'submit' })
+                    .then((token) => {
+                        this.recaptchaToken = token;
+                    });
+            });
         }
-        
+
         getRecaptchaToken() {
-            // Return reCAPTCHA token if available
-            return 'dummy-token'; // Replace with actual reCAPTCHA implementation
+            return this.recaptchaToken || '';
         }
     }
     
