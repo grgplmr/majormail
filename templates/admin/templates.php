@@ -131,7 +131,7 @@ $templates = $wpdb->get_results("SELECT * FROM $table WHERE is_active = 1 ORDER 
 </div>
 
 <!-- Edit Template Modal -->
-<div id="ism-edit-template-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:1000;">
+<div id="ism-edit-template-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:10000;">
     <div style="background:#fff; padding:1.5rem; border-radius:8px; max-width:600px; width:100%;">
         <h3 style="margin-top:0;"><?php _e('Modifier le modèle', 'interpeller-son-maire'); ?></h3>
         <form id="ism-edit-template-form">
