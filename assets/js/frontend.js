@@ -231,40 +231,47 @@
             return true;
         }
         
-        handleSubmit(e) {
+        async handleSubmit(e) {
             e.preventDefault();
-            
+
             if (!this.isFormValid()) {
                 return;
             }
-            
+
             this.showLoading();
-            
-            const formData = {
-                commune_id: this.communeId.val(),
-                firstname: $('#ism-firstname').val().trim(),
-                lastname: $('#ism-lastname').val().trim(),
-                email: $('#ism-email').val().trim(),
-                message: this.messageTextarea.val().trim(),
-                template_id: this.templateSelect.val() || null,
-                recaptcha_token: this.getRecaptchaToken()
-            };
-            
-            $.ajax({
-                url: ismAjax.restUrl + 'send-message',
-                method: 'POST',
-                data: formData,
-                beforeSend: (xhr) => {
-                    xhr.setRequestHeader('X-WP-Nonce', ismAjax.restNonce);
-                },
-                success: (data) => {
-                    this.showSuccess();
-                },
-                error: (xhr) => {
-                    this.hideLoading();
-                    this.showError(xhr.responseJSON?.message || 'Une erreur est survenue');
-                }
-            });
+
+            try {
+                const recaptcha_token = await this.getRecaptchaToken();
+
+                const formData = {
+                    commune_id: this.communeId.val(),
+                    firstname: $('#ism-firstname').val().trim(),
+                    lastname: $('#ism-lastname').val().trim(),
+                    email: $('#ism-email').val().trim(),
+                    message: this.messageTextarea.val().trim(),
+                    template_id: this.templateSelect.val() || null,
+                    recaptcha_token: recaptcha_token
+                };
+
+                $.ajax({
+                    url: ismAjax.restUrl + 'send-message',
+                    method: 'POST',
+                    data: formData,
+                    beforeSend: (xhr) => {
+                        xhr.setRequestHeader('X-WP-Nonce', ismAjax.restNonce);
+                    },
+                    success: (data) => {
+                        this.showSuccess();
+                    },
+                    error: (xhr) => {
+                        this.hideLoading();
+                        this.showError(xhr.responseJSON?.message || 'Une erreur est survenue');
+                    }
+                });
+            } catch (error) {
+                this.hideLoading();
+                this.showError('Erreur lors de la vérification reCAPTCHA');
+            }
         }
         
         showLoading() {
@@ -306,9 +313,16 @@
             }
         }
         
-        getRecaptchaToken() {
-            // Return reCAPTCHA token if available
-            return 'dummy-token'; // Replace with actual reCAPTCHA implementation
+        async getRecaptchaToken() {
+            if (typeof grecaptcha !== 'undefined' && typeof ISM_RECAPTCHA_SITE_KEY !== 'undefined') {
+                try {
+                    return await grecaptcha.execute(ISM_RECAPTCHA_SITE_KEY, { action: 'submit' });
+                } catch (err) {
+                    console.error('reCAPTCHA error:', err);
+                    return '';
+                }
+            }
+            return '';
         }
     }
     
