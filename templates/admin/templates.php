@@ -79,7 +79,15 @@ $templates = $wpdb->get_results("SELECT * FROM $table WHERE is_active = 1 ORDER 
     
     <!-- Templates List -->
     <div class="ism-panel">
-        <h3><?php _e('Modèles existants', 'interpeller-son-maire'); ?></h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3><?php _e('Modèles existants', 'interpeller-son-maire'); ?></h3>
+            <div>
+                <button class="ism-btn ism-btn-secondary" onclick="document.getElementById('templates-csv-import').click()">
+                    <?php _e('Importer CSV', 'interpeller-son-maire'); ?>
+                </button>
+                <input type="file" id="templates-csv-import" accept=".csv" style="display: none;">
+            </div>
+        </div>
         
         <?php if (!empty($templates)): ?>
             <div style="display: grid; gap: 1.5rem;">
@@ -193,6 +201,35 @@ jQuery(document).ready(function($) {
                 }
             });
         }
+    });
+
+    $('#templates-csv-import').on('change', function(e) {
+        var file = e.target.files[0];
+        if (!file) return;
+
+        var formData = new FormData();
+        formData.append('csv_file', file);
+        formData.append('action', 'ism_import_templates');
+        formData.append('nonce', '<?php echo wp_create_nonce('ism_import_templates'); ?>');
+
+        $.ajax({
+            url: ajaxurl,
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.success) {
+                    alert('Import réussi: ' + response.data.imported + ' modèles importés');
+                    location.reload();
+                } else {
+                    alert('Erreur: ' + response.data);
+                }
+            },
+            error: function() {
+                alert('Erreur lors de l\'import');
+            }
+        });
     });
 });
 </script>

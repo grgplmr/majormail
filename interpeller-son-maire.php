@@ -113,3 +113,65 @@ class InterpellerSonMaire {
 
 // Initialize plugin
 InterpellerSonMaire::getInstance();
+
+add_action('wp_ajax_ism_import_templates', 'ism_import_templates_callback');
+
+function ism_import_templates_callback() {
+    check_ajax_referer('ism_import_templates', 'nonce');
+
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error(__('Accès refusé', 'interpeller-son-maire'));
+    }
+
+    if (empty($_FILES['csv_file']['tmp_name'])) {
+        wp_send_json_error(__('Fichier manquant', 'interpeller-son-maire'));
+    }
+
+    $handle = fopen($_FILES['csv_file']['tmp_name'], 'r');
+    if (!$handle) {
+        wp_send_json_error(__('Impossible d\'ouvrir le fichier', 'interpeller-son-maire'));
+    }
+
+    $firstLine = fgets($handle);
+    if ($firstLine === false) {
+        fclose($handle);
+        wp_send_json_error(__('Fichier vide', 'interpeller-son-maire'));
+    }
+    $delimiter = substr_count($firstLine, ';') > substr_count($firstLine, ',') ? ';' : ',';
+    $rows = [str_getcsv(trim($firstLine), $delimiter)];
+    while (($data = fgetcsv($handle, 0, $delimiter)) !== false) {
+        $rows[] = $data;
+    }
+    fclose($handle);
+
+    global $wpdb;
+    $table = $wpdb->prefix . 'ism_templates';
+    $imported = 0;
+
+    foreach ($rows as $row) {
+        if (empty(array_filter($row))) {
+            continue;
+        }
+        if (isset($row[0]) && strtolower($row[0]) === 'title') {
+            continue;
+        }
+
+        $title = sanitize_text_field($row[0] ?? '');
+        $subject = sanitize_text_field($row[1] ?? '');
+        $content = isset($row[2]) ? wp_kses_post($row[2]) : '';
+        $category = sanitize_text_field($row[3] ?? 'waste');
+
+        if ($title && $subject && $content) {
+            $wpdb->insert($table, [
+                'title' => $title,
+                'subject' => $subject,
+                'content' => $content,
+                'category' => $category
+            ]);
+            $imported++;
+        }
+    }
+
+    wp_send_json_success(['imported' => $imported]);
+}
+

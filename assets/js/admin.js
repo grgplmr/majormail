@@ -23,8 +23,11 @@
             $('#ism-edit-commune-form').on('submit', (e) => this.handleEditCommune(e));
             $('#ism-edit-commune-cancel').on('click', () => $('#ism-edit-commune-modal').css('display', 'none'));
             
-            // Import CSV
+            // Import communes CSV
             $('#import-csv').on('change', (e) => this.handleImportCSV(e));
+
+            // Import templates CSV
+            $('#templates-csv-import').on('change', (e) => this.handleImportTemplates(e));
             
             // Template management
             $('.delete-template').on('click', (e) => this.handleDeleteTemplate(e));
@@ -151,6 +154,35 @@
                 success: (response) => {
                     if (response.success) {
                         alert('Import réussi: ' + response.data.imported + ' communes importées');
+                        location.reload();
+                    } else {
+                        alert('Erreur: ' + response.data);
+                    }
+                },
+                error: () => {
+                    alert('Erreur lors de l\'import');
+                }
+            });
+        }
+
+        handleImportTemplates(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('csv_file', file);
+            formData.append('action', 'ism_import_templates');
+            formData.append('nonce', $('#ism_admin_nonce').val());
+
+            $.ajax({
+                url: ajaxurl,
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: (response) => {
+                    if (response.success) {
+                        alert('Import réussi: ' + response.data.imported + ' modèles importés');
                         location.reload();
                     } else {
                         alert('Erreur: ' + response.data);
