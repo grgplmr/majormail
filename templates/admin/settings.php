@@ -19,6 +19,7 @@ if (isset($_POST['submit']) && wp_verify_nonce($_POST['ism_nonce'], 'ism_save_se
 
 <div class="wrap">
     <h1><?php _e('Réglages', 'interpeller-son-maire'); ?></h1>
+    <input type="hidden" id="ism_admin_nonce" value="<?php echo wp_create_nonce('ism_admin'); ?>">
     
     <div class="ism-admin-header">
         <div class="ism-admin-welcome">

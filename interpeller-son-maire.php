@@ -66,6 +66,7 @@ class InterpellerSonMaire {
         new InterpellerSonMaire\Api\RestApi();
         new InterpellerSonMaire\Core\CronJobs();
         new InterpellerSonMaire\Gutenberg\Block();
+        new InterpellerSonMaire\Admin\AjaxHandlers();
         
         // Enqueue scripts and styles
         add_action('wp_enqueue_scripts', [$this, 'enqueueScripts']);

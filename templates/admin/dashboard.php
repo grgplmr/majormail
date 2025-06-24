@@ -6,6 +6,7 @@ $stats = Logger::getStatistics(30);
 
 <div class="wrap">
     <h1><?php _e('Interpeller son Maire - Tableau de bord', 'interpeller-son-maire'); ?></h1>
+    <input type="hidden" id="ism_admin_nonce" value="<?php echo wp_create_nonce('ism_admin'); ?>">
     
     <div class="ism-admin-header">
         <div class="ism-admin-welcome">
