@@ -7,4 +7,14 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
+  build: {
+    outDir: 'assets/js',
+    emptyOutDir: false,
+    rollupOptions: {
+      input: 'src/main.tsx',
+      output: {
+        entryFileNames: 'frontend.js',
+      },
+    },
+  },
 });
