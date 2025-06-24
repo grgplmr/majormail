@@ -1,16 +1,13 @@
 <?php
+use InterpellerSonMaire\Admin\AdminMenu;
+
 $settings = get_option('ism_settings', []);
 
 // Handle form submission
 if (isset($_POST['submit']) && wp_verify_nonce($_POST['ism_nonce'], 'ism_save_settings')) {
-    $new_settings = [
-        'email_subject' => sanitize_text_field($_POST['email_subject']),
-        'confirmation_message' => wp_kses_post($_POST['confirmation_message']),
-        'recaptcha_enabled' => isset($_POST['recaptcha_enabled']),
-        'auto_purge_enabled' => isset($_POST['auto_purge_enabled']),
-        'purge_delay_months' => absint($_POST['purge_delay_months'])
-    ];
-    
+    $admin = new AdminMenu();
+    $new_settings = $admin->sanitizeSettings($_POST);
+
     update_option('ism_settings', $new_settings);
     $settings = $new_settings;
     echo '<div class="notice notice-success"><p>Paramètres sauvegardés avec succès</p></div>';
@@ -29,6 +26,7 @@ if (isset($_POST['submit']) && wp_verify_nonce($_POST['ism_nonce'], 'ism_save_se
     
     <form method="post" action="" id="ism-settings-form">
         <?php wp_nonce_field('ism_save_settings', 'ism_nonce'); ?>
+        <input type="hidden" id="ism_admin_nonce" value="<?php echo wp_create_nonce('ism_save_settings'); ?>">
         
         <!-- Email Configuration -->
         <div class="ism-panel" style="margin-bottom: 2rem;">
