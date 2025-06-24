@@ -5,18 +5,23 @@ global $wpdb;
 if (isset($_POST['action'])) {
     if ($_POST['action'] === 'add_commune' && wp_verify_nonce($_POST['ism_nonce'], 'ism_add_commune')) {
         $table = $wpdb->prefix . 'ism_communes';
-        $result = $wpdb->insert($table, [
-            'name' => sanitize_text_field($_POST['commune_name']),
-            'code_insee' => sanitize_text_field($_POST['code_insee']),
-            'mayor_email' => sanitize_email($_POST['mayor_email']),
-            'population' => absint($_POST['population']),
-            'region' => sanitize_text_field($_POST['region'])
-        ]);
-        
-        if ($result) {
-            echo '<div class="notice notice-success"><p>Commune ajoutée avec succès</p></div>';
+
+        if (empty($_POST['commune_name']) || empty($_POST['mayor_email'])) {
+            echo '<div class="notice notice-error"><p>' . __('Veuillez renseigner au minimum le nom de la commune et l\'email du maire.', 'interpeller-son-maire') . '</p></div>';
         } else {
-            echo '<div class="notice notice-error"><p>Erreur lors de l\'ajout de la commune</p></div>';
+            $result = $wpdb->insert($table, [
+                'name' => sanitize_text_field($_POST['commune_name']),
+                'code_insee' => $_POST['code_insee'] !== '' ? sanitize_text_field($_POST['code_insee']) : null,
+                'mayor_email' => sanitize_email($_POST['mayor_email']),
+                'population' => isset($_POST['population']) ? absint($_POST['population']) : null,
+                'region' => sanitize_text_field($_POST['region'])
+            ]);
+
+            if ($result) {
+                echo '<div class="notice notice-success"><p>Commune ajoutée avec succès</p></div>';
+            } else {
+                echo '<div class="notice notice-error"><p>Erreur lors de l\'ajout de la commune</p></div>';
+            }
         }
     }
 }
@@ -49,8 +54,8 @@ $communes = $wpdb->get_results("SELECT * FROM $table ORDER BY name ASC");
                     <input type="text" id="commune_name" name="commune_name" required>
                 </div>
                 <div class="ism-form-group">
-                    <label for="code_insee"><?php _e('Code INSEE *', 'interpeller-son-maire'); ?></label>
-                    <input type="text" id="code_insee" name="code_insee" required>
+                    <label for="code_insee"><?php _e('Code INSEE', 'interpeller-son-maire'); ?></label>
+                    <input type="text" id="code_insee" name="code_insee">
                 </div>
             </div>
             
@@ -109,7 +114,13 @@ $communes = $wpdb->get_results("SELECT * FROM $table ORDER BY name ASC");
                             <td><?php echo esc_html($commune->mayor_email); ?></td>
                             <td><?php echo esc_html($commune->region); ?></td>
                             <td>
-                                <button class="ism-btn ism-btn-secondary" style="margin-right: 0.5rem;">
+                                <button class="ism-btn ism-btn-secondary edit-commune" style="margin-right: 0.5rem;"
+                                    data-commune-id="<?php echo $commune->id; ?>"
+                                    data-commune-name="<?php echo esc_attr($commune->name); ?>"
+                                    data-code-insee="<?php echo esc_attr($commune->code_insee); ?>"
+                                    data-mayor-email="<?php echo esc_attr($commune->mayor_email); ?>"
+                                    data-population="<?php echo esc_attr($commune->population); ?>"
+                                    data-region="<?php echo esc_attr($commune->region); ?>">
                                     <?php _e('Modifier', 'interpeller-son-maire'); ?>
                                 </button>
                                 <button class="ism-btn ism-btn-danger delete-commune" data-commune-id="<?php echo $commune->id; ?>">
@@ -123,6 +134,45 @@ $communes = $wpdb->get_results("SELECT * FROM $table ORDER BY name ASC");
         <?php else: ?>
             <p><?php _e('Aucune commune trouvée. Ajoutez votre première commune ci-dessus.', 'interpeller-son-maire'); ?></p>
         <?php endif; ?>
+    </div>
+</div>
+
+<!-- Edit Commune Modal -->
+<div id="ism-edit-commune-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:10000;">
+    <div style="background:#fff; padding:1.5rem; border-radius:8px; max-width:600px; width:100%;">
+        <h3 style="margin-top:0;">
+            <?php _e('Modifier la commune', 'interpeller-son-maire'); ?>
+        </h3>
+        <form id="ism-edit-commune-form">
+            <?php wp_nonce_field('ism_edit_commune', 'ism_edit_commune_nonce'); ?>
+            <input type="hidden" id="edit_commune_id" name="commune_id">
+            <div class="ism-form-group" style="margin-bottom:1rem;">
+                <label for="edit_commune_name"><?php _e('Nom de la commune', 'interpeller-son-maire'); ?></label>
+                <input type="text" id="edit_commune_name" name="commune_name" required>
+            </div>
+            <div class="ism-form-group" style="margin-bottom:1rem;">
+                <label for="edit_code_insee"><?php _e('Code INSEE', 'interpeller-son-maire'); ?></label>
+                <input type="text" id="edit_code_insee" name="code_insee">
+            </div>
+            <div class="ism-form-group" style="margin-bottom:1rem;">
+                <label for="edit_mayor_email"><?php _e('Email du maire', 'interpeller-son-maire'); ?></label>
+                <input type="email" id="edit_mayor_email" name="mayor_email" required>
+            </div>
+            <div class="ism-form-group" style="margin-bottom:1rem;">
+                <label for="edit_population"><?php _e('Population', 'interpeller-son-maire'); ?></label>
+                <input type="number" id="edit_population" name="population">
+            </div>
+            <div class="ism-form-group" style="margin-bottom:1rem;">
+                <label for="edit_region"><?php _e('Région', 'interpeller-son-maire'); ?></label>
+                <input type="text" id="edit_region" name="region">
+            </div>
+            <button type="submit" class="ism-btn ism-btn-primary" style="margin-right:0.5rem;">
+                <?php _e('Enregistrer', 'interpeller-son-maire'); ?>
+            </button>
+            <button type="button" class="ism-btn ism-btn-secondary" id="ism-edit-commune-cancel">
+                <?php _e('Annuler', 'interpeller-son-maire'); ?>
+            </button>
+        </form>
     </div>
 </div>
 
@@ -151,6 +201,50 @@ jQuery(document).ready(function($) {
                 }
             });
         }
+    });
+
+    $('.edit-commune').on('click', function(e) {
+        e.preventDefault();
+        var btn = $(this);
+        $('#edit_commune_id').val(btn.data('commune-id'));
+        $('#edit_commune_name').val(btn.data('commune-name'));
+        $('#edit_code_insee').val(btn.data('code-insee'));
+        $('#edit_mayor_email').val(btn.data('mayor-email'));
+        $('#edit_population').val(btn.data('population'));
+        $('#edit_region').val(btn.data('region'));
+        $('#ism-edit-commune-modal').css('display', 'flex');
+    });
+
+    $('#ism-edit-commune-cancel').on('click', function() {
+        $('#ism-edit-commune-modal').css('display', 'none');
+    });
+
+    $('#ism-edit-commune-form').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: ajaxurl,
+            method: 'POST',
+            data: {
+                action: 'ism_edit_commune',
+                nonce: $('#ism_edit_commune_nonce').val(),
+                commune_id: $('#edit_commune_id').val(),
+                commune_name: $('#edit_commune_name').val(),
+                code_insee: $('#edit_code_insee').val(),
+                mayor_email: $('#edit_mayor_email').val(),
+                population: $('#edit_population').val(),
+                region: $('#edit_region').val()
+            },
+            success: function(response) {
+                if (response.success) {
+                    location.reload();
+                } else {
+                    alert('Erreur: ' + response.data);
+                }
+            },
+            error: function() {
+                alert('Erreur lors de la mise à jour');
+            }
+        });
     });
 });
 </script>
