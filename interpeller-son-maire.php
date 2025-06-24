@@ -74,13 +74,21 @@ class InterpellerSonMaire {
     public function enqueueScripts() {
         wp_enqueue_script('ism-frontend', ISM_PLUGIN_URL . 'assets/js/frontend.js', ['jquery'], ISM_PLUGIN_VERSION, true);
         wp_enqueue_style('ism-frontend', ISM_PLUGIN_URL . 'assets/css/frontend.css', [], ISM_PLUGIN_VERSION);
-        
+
+        $settings = get_option('ism_settings', []);
+        $site_key = defined('ISM_RECAPTCHA_SITE_KEY') ? ISM_RECAPTCHA_SITE_KEY : '';
+        if (!empty($site_key) && ($settings['recaptcha_enabled'] ?? true)) {
+            wp_enqueue_script('google-recaptcha', 'https://www.google.com/recaptcha/api.js?render=' . $site_key, [], null, true);
+        }
+
         // Localize script
         wp_localize_script('ism-frontend', 'ismAjax', [
             'ajaxurl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('ism_nonce'),
             'restUrl' => rest_url('interpeller-son-maire/v1/'),
-            'restNonce' => wp_create_nonce('wp_rest')
+            'restNonce' => wp_create_nonce('wp_rest'),
+            'recaptchaSiteKey' => $site_key,
+            'recaptchaEnabled' => !empty($site_key) && ($settings['recaptcha_enabled'] ?? true)
         ]);
     }
     

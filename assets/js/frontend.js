@@ -240,30 +240,32 @@
             
             this.showLoading();
             
-            const formData = {
-                commune_id: this.communeId.val(),
-                firstname: $('#ism-firstname').val().trim(),
-                lastname: $('#ism-lastname').val().trim(),
-                email: $('#ism-email').val().trim(),
-                message: this.messageTextarea.val().trim(),
-                template_id: this.templateSelect.val() || null,
-                recaptcha_token: this.getRecaptchaToken()
-            };
-            
-            $.ajax({
-                url: ismAjax.restUrl + 'send-message',
-                method: 'POST',
-                data: formData,
-                beforeSend: (xhr) => {
-                    xhr.setRequestHeader('X-WP-Nonce', ismAjax.restNonce);
-                },
-                success: (data) => {
-                    this.showSuccess();
-                },
-                error: (xhr) => {
-                    this.hideLoading();
-                    this.showError(xhr.responseJSON?.message || 'Une erreur est survenue');
-                }
+            this.getRecaptchaToken().then(token => {
+                const formData = {
+                    commune_id: this.communeId.val(),
+                    firstname: $('#ism-firstname').val().trim(),
+                    lastname: $('#ism-lastname').val().trim(),
+                    email: $('#ism-email').val().trim(),
+                    message: this.messageTextarea.val().trim(),
+                    template_id: this.templateSelect.val() || null,
+                    recaptcha_token: token
+                };
+
+                $.ajax({
+                    url: ismAjax.restUrl + 'send-message',
+                    method: 'POST',
+                    data: formData,
+                    beforeSend: (xhr) => {
+                        xhr.setRequestHeader('X-WP-Nonce', ismAjax.restNonce);
+                    },
+                    success: (data) => {
+                        this.showSuccess();
+                    },
+                    error: (xhr) => {
+                        this.hideLoading();
+                        this.showError(xhr.responseJSON?.message || 'Une erreur est survenue');
+                    }
+                });
             });
         }
         
@@ -300,15 +302,28 @@
         }
         
         initRecaptcha() {
-            // Initialize Google reCAPTCHA v3 if configured
-            if (typeof grecaptcha !== 'undefined') {
-                // reCAPTCHA is loaded
+            if (typeof grecaptcha === 'undefined' || !ismAjax.recaptchaEnabled) {
+                return;
             }
+
+            grecaptcha.ready(() => {
+                grecaptcha.execute(ismAjax.recaptchaSiteKey, { action: 'ism_form' })
+                    .then(token => { this.recaptchaToken = token; });
+            });
         }
-        
+
         getRecaptchaToken() {
-            // Return reCAPTCHA token if available
-            return 'dummy-token'; // Replace with actual reCAPTCHA implementation
+            if (typeof grecaptcha === 'undefined' || !ismAjax.recaptchaEnabled) {
+                return Promise.resolve('');
+            }
+
+            return new Promise(resolve => {
+                grecaptcha.ready(() => {
+                    grecaptcha.execute(ismAjax.recaptchaSiteKey, { action: 'ism_form' })
+                        .then(resolve)
+                        .catch(() => resolve(''));
+                });
+            });
         }
     }
     
