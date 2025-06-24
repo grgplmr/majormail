@@ -27,6 +27,7 @@ $templates = $wpdb->get_results("SELECT * FROM $table WHERE is_active = 1 ORDER 
 
 <div class="wrap">
     <h1><?php _e('Modèles de messages', 'interpeller-son-maire'); ?></h1>
+    <input type="hidden" id="ism_admin_nonce" value="<?php echo wp_create_nonce('ism_admin'); ?>">
     
     <div class="ism-admin-header">
         <div class="ism-admin-welcome">
