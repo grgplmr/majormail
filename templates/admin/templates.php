@@ -96,7 +96,12 @@ $templates = $wpdb->get_results("SELECT * FROM $table WHERE is_active = 1 ORDER 
                                 </p>
                             </div>
                             <div>
-                                <button class="ism-btn ism-btn-secondary" style="margin-right: 0.5rem;">
+                                <button class="ism-btn ism-btn-secondary edit-template" style="margin-right: 0.5rem;"
+                                    data-template-id="<?php echo $template->id; ?>"
+                                    data-template-title="<?php echo esc_attr($template->title); ?>"
+                                    data-template-subject="<?php echo esc_attr($template->subject); ?>"
+                                    data-template-content="<?php echo esc_attr($template->content); ?>"
+                                    data-template-category="<?php echo esc_attr($template->category); ?>">
                                     <?php _e('Modifier', 'interpeller-son-maire'); ?>
                                 </button>
                                 <button class="ism-btn ism-btn-danger delete-template" data-template-id="<?php echo $template->id; ?>">
@@ -122,6 +127,44 @@ $templates = $wpdb->get_results("SELECT * FROM $table WHERE is_active = 1 ORDER 
         <?php else: ?>
             <p><?php _e('Aucun modèle trouvé. Ajoutez votre premier modèle ci-dessus.', 'interpeller-son-maire'); ?></p>
         <?php endif; ?>
+    </div>
+</div>
+
+<!-- Edit Template Modal -->
+<div id="ism-edit-template-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:1000;">
+    <div style="background:#fff; padding:1.5rem; border-radius:8px; max-width:600px; width:100%;">
+        <h3 style="margin-top:0;"><?php _e('Modifier le modèle', 'interpeller-son-maire'); ?></h3>
+        <form id="ism-edit-template-form">
+            <?php wp_nonce_field('ism_edit_template', 'ism_edit_template_nonce'); ?>
+            <input type="hidden" id="edit_template_id" name="template_id">
+            <div class="ism-form-group" style="margin-bottom:1rem;">
+                <label for="edit_template_title"><?php _e('Titre du modèle', 'interpeller-son-maire'); ?></label>
+                <input type="text" id="edit_template_title" name="template_title" required>
+            </div>
+            <div class="ism-form-group" style="margin-bottom:1rem;">
+                <label for="edit_template_category"><?php _e('Catégorie', 'interpeller-son-maire'); ?></label>
+                <select id="edit_template_category" name="template_category">
+                    <option value="waste"><?php _e('Déchets', 'interpeller-son-maire'); ?></option>
+                    <option value="environment"><?php _e('Environnement', 'interpeller-son-maire'); ?></option>
+                    <option value="services"><?php _e('Services publics', 'interpeller-son-maire'); ?></option>
+                    <option value="transport"><?php _e('Transport', 'interpeller-son-maire'); ?></option>
+                </select>
+            </div>
+            <div class="ism-form-group" style="margin-bottom:1rem;">
+                <label for="edit_template_subject"><?php _e('Objet de l\'email', 'interpeller-son-maire'); ?></label>
+                <input type="text" id="edit_template_subject" name="template_subject" required>
+            </div>
+            <div class="ism-form-group" style="margin-bottom:1rem;">
+                <label for="edit_template_content"><?php _e('Contenu du message', 'interpeller-son-maire'); ?></label>
+                <textarea id="edit_template_content" name="template_content" rows="8" required></textarea>
+            </div>
+            <button type="submit" class="ism-btn ism-btn-primary" style="margin-right:0.5rem;">
+                <?php _e('Enregistrer', 'interpeller-son-maire'); ?>
+            </button>
+            <button type="button" class="ism-btn ism-btn-secondary" id="ism-edit-template-cancel">
+                <?php _e('Annuler', 'interpeller-son-maire'); ?>
+            </button>
+        </form>
     </div>
 </div>
 

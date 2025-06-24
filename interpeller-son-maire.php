@@ -61,6 +61,7 @@ class InterpellerSonMaire {
         
         // Initialize components
         new InterpellerSonMaire\Admin\AdminMenu();
+        new InterpellerSonMaire\Admin\AjaxHandler();
         new InterpellerSonMaire\Frontend\Shortcode();
         new InterpellerSonMaire\Api\RestApi();
         new InterpellerSonMaire\Core\CronJobs();

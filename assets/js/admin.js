@@ -25,6 +25,9 @@
             
             // Template management
             $('.delete-template').on('click', (e) => this.handleDeleteTemplate(e));
+            $('.edit-template').on('click', (e) => this.openEditTemplate(e));
+            $('#ism-edit-template-form').on('submit', (e) => this.handleEditTemplate(e));
+            $('#ism-edit-template-cancel').on('click', () => $('#ism-edit-template-modal').hide());
             
             // Settings form
             $('#ism-settings-form').on('submit', (e) => this.handleSaveSettings(e));
@@ -141,6 +144,45 @@
                 },
                 error: () => {
                     alert('Erreur lors de la suppression');
+                }
+            });
+        }
+
+        openEditTemplate(e) {
+            e.preventDefault();
+            const btn = $(e.currentTarget);
+            $('#edit_template_id').val(btn.data('template-id'));
+            $('#edit_template_title').val(btn.data('template-title'));
+            $('#edit_template_subject').val(btn.data('template-subject'));
+            $('#edit_template_content').val(btn.data('template-content'));
+            $('#edit_template_category').val(btn.data('template-category'));
+            $('#ism-edit-template-modal').show();
+        }
+
+        handleEditTemplate(e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: ajaxurl,
+                method: 'POST',
+                data: {
+                    action: 'ism_edit_template',
+                    nonce: $('#ism_edit_template_nonce').val(),
+                    template_id: $('#edit_template_id').val(),
+                    template_title: $('#edit_template_title').val(),
+                    template_subject: $('#edit_template_subject').val(),
+                    template_content: $('#edit_template_content').val(),
+                    template_category: $('#edit_template_category').val()
+                },
+                success: (response) => {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        alert('Erreur: ' + response.data);
+                    }
+                },
+                error: () => {
+                    alert('Erreur lors de la mise à jour');
                 }
             });
         }
